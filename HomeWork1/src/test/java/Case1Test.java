@@ -57,6 +57,8 @@ public class Case1Test {
                 .xpath("//a[@class='ui-link menu-desktop__root-title' and text() = 'Бытовая техника']"));
         elementRootCategory.click();
 
+        Thread.sleep(2000);
+
         WebElement checkTitle = driver.findElement(By
                 .className("subcategory__page-title"));
         logger.info("Subcategory - Бытовая техника = " + checkTitle.getText().equals("Бытовая техника"));
@@ -65,6 +67,8 @@ public class Case1Test {
         WebElement elementSubCategory = driver.findElement(By
                 .xpath("//span[@class='subcategory__title' and text() = 'Техника для кухни']"));
         elementSubCategory.click();
+
+        Thread.sleep(2000);
 
         WebElement checkTitleSubcategory= driver.findElement(By
                 .className("subcategory__page-title"));

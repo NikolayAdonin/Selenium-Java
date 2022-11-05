@@ -86,6 +86,8 @@ public class Case2Test {
                 .xpath("//span[@class='subcategory__title' and text() = 'Плиты электрические']"));
         elementElectricCookers.click();
 
+        Thread.sleep(3000);
+
         WebElement elementItemCount = driver.findElement(By.xpath("//span[@data-role='items-count']"));
 
         Thread.sleep(2000);

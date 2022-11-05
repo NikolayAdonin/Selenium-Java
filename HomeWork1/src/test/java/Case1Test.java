@@ -1,6 +1,7 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -21,7 +22,7 @@ public class Case1Test {
     @BeforeEach
     public void setUp() {
         logger.info("env = " + envBrowserName + " + " + envPageLoadStrategy);
-        driver = WebDriverFactory.getDriver(envBrowserName.toLowerCase());
+        driver = WebDriverFactory.getDriver(envBrowserName.toLowerCase(), envPageLoadStrategy.toLowerCase());
         logger.info("Драйвер стартовал!");
     }
 
@@ -37,7 +38,6 @@ public class Case1Test {
     public void case1Test() throws InterruptedException {
 
         driver.get(site);
-        driver.manage().window().maximize();
         logger.info("Открыта страница - " + site);
 
         logger.info("Title - " + driver.getTitle());
@@ -47,50 +47,50 @@ public class Case1Test {
 
         Thread.sleep(2000);
 
-        WebElement element = driver.findElement(By
-                .xpath("//span[@class='menu-mobile__root-title' and normalize-space() = 'Бытовая техника']"));
-        if (!element.isDisplayed())
-            element = driver.findElement(By
-                    .xpath("//a[@class='ui-link menu-desktop__root-title' and normalize-space() = 'Бытовая техника']"));
+        WebElement elementApplyCity = driver.findElement(By
+                .xpath("//span[@class='base-ui-button-v2__text' and text() = 'Всё верно']"));
+        elementApplyCity.click();
 
-        element.click();
+        Thread.sleep(2000);
+
+        WebElement elementRootCategory = driver.findElement(By
+                .xpath("//a[@class='ui-link menu-desktop__root-title' and text() = 'Бытовая техника']"));
+        elementRootCategory.click();
 
         WebElement checkTitle = driver.findElement(By
                 .className("subcategory__page-title"));
         logger.info("Subcategory - Бытовая техника = " + checkTitle.getText().equals("Бытовая техника"));
+        Assertions.assertTrue(checkTitle.getText().equals("Бытовая техника"), "Текст 'Бытовая техника' не отображается");
 
-        WebElement elementKitchen = driver.findElement(By
-                .xpath("//span[@class='subcategory__title' and normalize-space() = 'Техника для кухни']"));
-        elementKitchen.click();
+        WebElement elementSubCategory = driver.findElement(By
+                .xpath("//span[@class='subcategory__title' and text() = 'Техника для кухни']"));
+        elementSubCategory.click();
 
-        WebElement checkTitleKitchen = driver.findElement(By
+        WebElement checkTitleSubcategory= driver.findElement(By
                 .className("subcategory__page-title"));
 
-        logger.info("Subcategory - Техника для кухни = " + checkTitleKitchen.getText().equals("Техника для кухни"));
+        logger.info("Subcategory - Техника для кухни = " + checkTitleSubcategory.getText().equals("Техника для кухни"));
+        Assertions.assertTrue(checkTitleSubcategory.getText().equals("Техника для кухни"), "Текст 'Техника для кухни' не отображается");
 
         Thread.sleep(2000);
 
         WebElement checkRefCustomKitchen = driver.findElement(By
-                .xpath("//a[@class='button-ui button-ui_white configurator-links-block__links-link' and normalize-space() = 'Собрать свою кухню']"));
+                .xpath("//a[@class='button-ui button-ui_white configurator-links-block__links-link' and text() = 'Собрать свою кухню']"));
 
         logger.info("Видимость ссылки 'Собрать свою кухню' = " + checkRefCustomKitchen.isDisplayed());
+        Assertions.assertTrue(checkRefCustomKitchen.isDisplayed(), "Ссылка 'Собрать свою кухню' не отображается");
 
-        List<WebElement> subCategorys = driver.findElements(By
+        List<WebElement> elementsSubCategory = driver.findElements(By
                 .xpath("//span[@class='subcategory__title']"));
 
         logger.info("Названия категорий = ");
         String tempString = "";
-        for (WebElement tempElement : subCategorys) {
+        for (WebElement tempElement : elementsSubCategory) {
             logger.info(tempElement.getText());
         }
         Thread.sleep(2000);
 
-        logger.info("Количество категорий = " + subCategorys.stream().count());
-        logger.info("Количество категорий > 5 = " + (subCategorys.stream().count() > 5));
-
-        //String sdad = "192 товара";
-        //logger.info(Integer.parseInt(sdad.replaceAll("\\D","")));
-
+        logger.info("Количество категорий = " + elementsSubCategory.stream().count());
+        Assertions.assertTrue(elementsSubCategory.stream().count() > 5, "Количество категорий > 5");
     }
-
 }

@@ -1,6 +1,7 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -21,7 +22,7 @@ public class Case2Test {
     @BeforeEach
     public void setUp() {
         logger.info("env = " + envBrowserName + " + " + envPageLoadStrategy);
-        driver = WebDriverFactory.getDriver(envBrowserName.toLowerCase());
+        driver = WebDriverFactory.getDriver(envBrowserName.toLowerCase(), envPageLoadStrategy.toLowerCase());
         logger.info("Драйвер стартовал!");
     }
 
@@ -36,23 +37,29 @@ public class Case2Test {
     @Test
     public void case2Test() throws InterruptedException {
         driver.get(site);
-        driver.manage().window().maximize();
+        //driver.manage().window().maximize();
 
         Thread.sleep(2000);
 
-        WebElement element = driver.findElement(By
-                .xpath("//a[@class='ui-link menu-desktop__root-title' and normalize-space() = 'Бытовая техника']"));
+        WebElement elementCityApply = driver.findElement(By
+                .xpath("//span[@class='base-ui-button-v2__text' and text() = 'Всё верно']"));
+        elementCityApply.click();
+
+        Thread.sleep(2000);
+
+        WebElement elementRootCategory = driver.findElement(By
+                .xpath("//a[@class='ui-link menu-desktop__root-title' and text() = 'Бытовая техника']"));
 
         Actions actions = new Actions(driver);
         actions
-                .moveToElement(element)
+                .moveToElement(elementRootCategory)
                 .perform();
         Thread.sleep(2000);
-        List<WebElement> elements = driver.findElements(By
+        List<WebElement> elementsFirstLevel = driver.findElements(By
                 .xpath("//a[@class='ui-link menu-desktop__first-level']"));
         logger.info("Подкатегории Бытовая техника: ");
 
-        for (WebElement tempElement : elements)
+        for (WebElement tempElement : elementsFirstLevel)
             logger.info(tempElement.getText());
 
         List<WebElement> elementsSecondLevel = driver.findElements(By
@@ -62,10 +69,9 @@ public class Case2Test {
                 .moveToElement(elementsSecondLevel.get(0))
                 .perform();
 
-        Thread.sleep(3000);
+        Thread.sleep(2000);
 
         List<WebElement> popUpElementsSecondLevel = driver.findElements(By.cssSelector(".menu-desktop__popup-link"));
-                //.xpath("//a[@class='ui-link menu-desktop__popup-link']"));
 
         logger.info("Количество ссылок в подменю = " + popUpElementsSecondLevel.stream().count());
 
@@ -74,13 +80,18 @@ public class Case2Test {
                 .click()
                 .perform();
 
-        WebElement elementElectricFurnace = driver.findElement(By
-                .xpath("//span[@class='subcategory__title' and normalize-space() = 'Плиты электрические']"));
-        elementElectricFurnace.click();
+        Thread.sleep(2000);
+
+        WebElement elementElectricCookers = driver.findElement(By
+                .xpath("//span[@class='subcategory__title' and text() = 'Плиты электрические']"));
+        elementElectricCookers.click();
 
         WebElement elementItemCount = driver.findElement(By.xpath("//span[@data-role='items-count']"));
-        logger.info("Количество товаров = "+elementItemCount.getText().replaceAll("\\D",""));
 
-        Thread.sleep(3000);
+        Thread.sleep(2000);
+
+        String itemCountInt = elementItemCount.getText().replaceAll("\\D", "");
+        logger.info("Количество товаров = " + itemCountInt);
+        Assertions.assertTrue(Integer.parseInt(itemCountInt) > 100, "Количество товаров > 100");
     }
 }

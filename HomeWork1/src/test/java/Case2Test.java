@@ -94,6 +94,6 @@ public class Case2Test {
 
         String itemCountInt = elementItemCount.getText().replaceAll("\\D", "");
         logger.info("Количество товаров = " + itemCountInt);
-        Assertions.assertTrue(Integer.parseInt(itemCountInt) > 100, "Количество товаров > 100");
+        Assertions.assertTrue(Integer.parseInt(itemCountInt) > 100, "Количество товаров <= 100");
     }
 }

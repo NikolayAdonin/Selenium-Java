@@ -95,6 +95,6 @@ public class Case1Test {
         Thread.sleep(2000);
 
         logger.info("Количество категорий = " + elementsSubCategory.stream().count());
-        Assertions.assertTrue(elementsSubCategory.stream().count() > 5, "Количество категорий > 5");
+        Assertions.assertTrue(elementsSubCategory.stream().count() > 5, "Количество категорий <= 5");
     }
 }

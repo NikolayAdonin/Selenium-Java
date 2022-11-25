@@ -9,6 +9,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
+import java.time.Duration;
 import java.util.List;
 
 public class Case2Test {
@@ -37,36 +38,36 @@ public class Case2Test {
     @Test
     public void case2Test() throws InterruptedException {
         driver.get(site);
-        //driver.manage().window().maximize();
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(5));
 
         Thread.sleep(2000);
 
-        WebElement elementCityApply = driver.findElement(By
+        WebElement btnApplyCity = driver.findElement(By
                 .xpath("//span[@class='base-ui-button-v2__text' and text() = 'Всё верно']"));
-        elementCityApply.click();
+        btnApplyCity.click();
 
         Thread.sleep(2000);
 
-        WebElement elementRootCategory = driver.findElement(By
+        WebElement linkRootCategory = driver.findElement(By
                 .xpath("//a[@class='ui-link menu-desktop__root-title' and text() = 'Бытовая техника']"));
 
         Actions actions = new Actions(driver);
         actions
-                .moveToElement(elementRootCategory)
+                .moveToElement(linkRootCategory)
                 .perform();
         Thread.sleep(2000);
-        List<WebElement> elementsFirstLevel = driver.findElements(By
+        List<WebElement> linksFirstLevel = driver.findElements(By
                 .xpath("//a[@class='ui-link menu-desktop__first-level']"));
         logger.info("Подкатегории Бытовая техника: ");
 
-        for (WebElement tempElement : elementsFirstLevel)
+        for (WebElement tempElement : linksFirstLevel)
             logger.info(tempElement.getText());
 
-        List<WebElement> elementsSecondLevel = driver.findElements(By
+        List<WebElement> linksSecondLevel = driver.findElements(By
                 .xpath("//a[@class='ui-link menu-desktop__second-level']"));
 
         actions
-                .moveToElement(elementsSecondLevel.get(0))
+                .moveToElement(linksSecondLevel.get(0))
                 .perform();
 
         Thread.sleep(2000);
@@ -82,17 +83,17 @@ public class Case2Test {
 
         Thread.sleep(2000);
 
-        WebElement elementElectricCookers = driver.findElement(By
+        WebElement linkElectricCookers = driver.findElement(By
                 .xpath("//span[@class='subcategory__title' and text() = 'Плиты электрические']"));
-        elementElectricCookers.click();
+        linkElectricCookers.click();
 
         Thread.sleep(3000);
 
-        WebElement elementItemCount = driver.findElement(By.xpath("//span[@data-role='items-count']"));
+        WebElement textItemCount = driver.findElement(By.xpath("//span[@data-role='items-count']"));
 
         Thread.sleep(2000);
 
-        String itemCountInt = elementItemCount.getText().replaceAll("\\D", "");
+        String itemCountInt = textItemCount.getText().replaceAll("\\D", "");
         logger.info("Количество товаров = " + itemCountInt);
         Assertions.assertTrue(Integer.parseInt(itemCountInt) > 100, "Количество товаров <= 100");
     }

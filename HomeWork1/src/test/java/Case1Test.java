@@ -8,6 +8,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.time.Duration;
 import java.util.List;
 
 public class Case1Test {
@@ -44,7 +45,8 @@ public class Case1Test {
         logger.info("URL - " + driver.getCurrentUrl());
         logger.info(String.format("Ширина окна: %d", driver.manage().window().getSize().getWidth()));
         logger.info(String.format("Высота окна: %d", driver.manage().window().getSize().getHeight()));
-
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(5));
+        
         Thread.sleep(2000);
 
         WebElement btnApplyCity = driver.findElement(By

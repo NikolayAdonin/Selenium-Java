@@ -8,7 +8,16 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import ru.yandex.qatools.ashot.AShot;
+import ru.yandex.qatools.ashot.Screenshot;
+import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 
 public class Case2Test {
@@ -34,63 +43,106 @@ public class Case2Test {
         }
     }
 
+    public void takeScreenshot(WebDriver driver, String eventName) {
+        try {
+            Actions actions = new Actions(driver);
+            Screenshot screenshot = new AShot()
+                    .shootingStrategy(ShootingStrategies.viewportPasting(100))
+                    .takeScreenshot(driver);
+            ImageIO.write(screenshot.getImage(), "png", new File("screenshots\\Case2\\" + eventName + ".png"));
+            logger.info("Скриншот сохранен в файле " + eventName + ".png");
+            actions
+                    .scrollByAmount(-driver.manage().window().getSize().getHeight() * 10, -driver.manage().window().getSize().getWidth() * 10)
+                    .perform();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
     public void case2Test() throws InterruptedException {
         driver.get(site);
-        //driver.manage().window().maximize();
 
-        Thread.sleep(2000);
-
-        WebElement elementCityApply = driver.findElement(By
-                .xpath("//span[@class='base-ui-button-v2__text' and text() = 'Всё верно']"));
-        elementCityApply.click();
-
-        Thread.sleep(2000);
-
-        WebElement elementRootCategory = driver.findElement(By
-                .xpath("//a[@class='ui-link menu-desktop__root-title' and text() = 'Бытовая техника']"));
-
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(5));
         Actions actions = new Actions(driver);
-        actions
-                .moveToElement(elementRootCategory)
-                .perform();
-        Thread.sleep(2000);
-        List<WebElement> elementsFirstLevel = driver.findElements(By
-                .xpath("//a[@class='ui-link menu-desktop__first-level']"));
-        logger.info("Подкатегории Бытовая техника: ");
 
+        takeScreenshot(driver,"afterLoadPage1");
+
+        By btnApplyCityXPath = By.xpath("//span[@class='base-ui-button-v2__text' and text() = 'Всё верно']");
+        wait.until(ExpectedConditions.elementToBeClickable(btnApplyCityXPath));
+        WebElement btnApplyCity = driver.findElement(btnApplyCityXPath);
+        btnApplyCity.click();
+
+        takeScreenshot(driver,"afterApplyCity");
+
+        By linkRootCategoryXPath = By.xpath("//a[@class='ui-link menu-desktop__root-title' and text() = 'Бытовая техника']");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(linkRootCategoryXPath));
+        WebElement linkRootCategory = driver.findElement(linkRootCategoryXPath);
+        actions
+                .moveToElement(linkRootCategory)
+                .perform();
+
+        takeScreenshot(driver,"afterMoveToLinkRootCategory");
+
+        By linksFirstLevelXPath = By.xpath("//a[@class='ui-link menu-desktop__first-level']");
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(linksFirstLevelXPath));
+        List<WebElement> elementsFirstLevel = driver.findElements(linksFirstLevelXPath);
+        logger.info("Подкатегории Бытовая техника: ");
         for (WebElement tempElement : elementsFirstLevel)
             logger.info(tempElement.getText());
 
-        List<WebElement> elementsSecondLevel = driver.findElements(By
-                .xpath("//a[@class='ui-link menu-desktop__second-level']"));
-
+        By linkMakeDrinksXPath = By.xpath("//a[@class='ui-link menu-desktop__second-level' and text() = 'Приготовление напитков']");
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(linkMakeDrinksXPath));
+        WebElement linkMakeDrinks= driver.findElement(linkMakeDrinksXPath);
         actions
-                .moveToElement(elementsSecondLevel.get(0))
+                .moveToElement(linkMakeDrinks)
                 .perform();
 
-        Thread.sleep(2000);
-
-        List<WebElement> popUpElementsSecondLevel = driver.findElements(By.cssSelector(".menu-desktop__popup-link"));
-
-        logger.info("Количество ссылок в подменю = " + popUpElementsSecondLevel.stream().count());
+        takeScreenshot(driver,"afterMoveToLinkDrinks");
 
         actions
-                .moveToElement(popUpElementsSecondLevel.get(0))
-                .click()
+                .moveToElement(linkRootCategory)
                 .perform();
 
-        Thread.sleep(2000);
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(linkMakeDrinksXPath));
+        actions
+                .moveToElement(linkMakeDrinks)
+                .perform();
 
-        WebElement elementElectricCookers = driver.findElement(By
-                .xpath("//span[@class='subcategory__title' and text() = 'Плиты электрические']"));
-        elementElectricCookers.click();
+        By popUpElementsSecondLevelCssSelector = By.cssSelector(".menu-desktop__popup-link");
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(popUpElementsSecondLevelCssSelector));
+        List<WebElement> popUpElementsSecondLevel = driver.findElements(popUpElementsSecondLevelCssSelector);
+        logger.info("Количество ссылок в подменю = " + (long) popUpElementsSecondLevel.size());
 
-        WebElement elementItemCount = driver.findElement(By.xpath("//span[@data-role='items-count']"));
+        By linkFurnaceXPath = By.xpath("//a[@class='ui-link menu-desktop__second-level' and text() = 'Плиты и печи']");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(linkFurnaceXPath));
+        WebElement linkFurnace = driver.findElement(linkFurnaceXPath);
+        actions
+                .moveToElement(linkFurnace)
+                .perform();
 
-        Thread.sleep(2000);
+        takeScreenshot(driver,"afterMoveToLinkFurnace");
 
-        String itemCountInt = elementItemCount.getText().replaceAll("\\D", "");
+        actions
+                .moveToElement(linkRootCategory)
+                .perform();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(linkFurnaceXPath));
+        actions
+                .moveToElement(linkFurnace)
+                .perform();
+
+        By linkElectricFurnaceXPath = By.xpath("//a[@class='ui-link menu-desktop__popup-link' and text() = 'Плиты электрические']");
+        wait.until(ExpectedConditions.elementToBeClickable(linkElectricFurnaceXPath));
+        WebElement linkElectricCookers = driver.findElement(linkElectricFurnaceXPath);
+        linkElectricCookers.click();
+
+        takeScreenshot(driver,"afterClickLinkElectricCookers");
+
+        By textItemCountXPath = By.xpath("//span[@data-role='items-count']");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(textItemCountXPath));
+        WebElement textItemCount = driver.findElement(textItemCountXPath);
+        String itemCountInt = textItemCount.getText().replaceAll("\\D", "");
         logger.info("Количество товаров = " + itemCountInt);
         Assertions.assertTrue(Integer.parseInt(itemCountInt) > 100, "Количество товаров > 100");
     }

@@ -17,40 +17,14 @@ public class WebDriverFactory {
                 ChromeOptions chromeOptions = new ChromeOptions();
                 chromeOptions.addArguments("--start-maximized");
                 chromeOptions.addArguments("--incognito");
-                switch (pageLoadStrategy) {
-                    case "normal":
-                        chromeOptions.setCapability("pageLoadStrategy", PageLoadStrategy.NORMAL);
-                        break;
-                    case "eager":
-                        chromeOptions.setCapability("pageLoadStrategy", PageLoadStrategy.EAGER);
-                        break;
-                    case "none":
-                        chromeOptions.setCapability("pageLoadStrategy", PageLoadStrategy.NONE);
-                        break;
-                    default:
-                        chromeOptions.setCapability("pageLoadStrategy", PageLoadStrategy.NORMAL);
-                        break;
-                }
+                chromeOptions.setPageLoadStrategy(PageLoadStrategy.valueOf(pageLoadStrategy.toUpperCase()));
                 WebDriverManager.chromedriver().setup();
                 return new ChromeDriver(chromeOptions);
             case "firefox":
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.addArguments("--kiosk");
                 firefoxOptions.addArguments("--private");
-                switch (pageLoadStrategy) {
-                    case "normal":
-                        firefoxOptions.setCapability("pageLoadStrategy", PageLoadStrategy.NORMAL);
-                        break;
-                    case "eager":
-                        firefoxOptions.setCapability("pageLoadStrategy", PageLoadStrategy.EAGER);
-                        break;
-                    case "none":
-                        firefoxOptions.setCapability("pageLoadStrategy", PageLoadStrategy.NONE);
-                        break;
-                    default:
-                        firefoxOptions.setCapability("pageLoadStrategy", PageLoadStrategy.NORMAL);
-                        break;
-                }
+                firefoxOptions.setPageLoadStrategy(PageLoadStrategy.valueOf(pageLoadStrategy.toUpperCase()));
                 WebDriverManager.firefoxdriver().setup();
                 return new FirefoxDriver(firefoxOptions);
             default:

@@ -60,21 +60,21 @@ public class Case2Test {
     }
 
     @Test
-    public void case2Test() throws InterruptedException {
+    public void case2Test() {
         driver.get(site);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(5));
         Actions actions = new Actions(driver);
 
-        takeScreenshot(driver,"afterLoadPage1");
+        takeScreenshot(driver, "afterLoadPage1");
 
         By btnApplyCityXPath = By.xpath("//span[@class='base-ui-button-v2__text' and text() = 'Всё верно']");
         wait.until(ExpectedConditions.elementToBeClickable(btnApplyCityXPath));
         WebElement btnApplyCity = driver.findElement(btnApplyCityXPath);
         btnApplyCity.click();
 
-        takeScreenshot(driver,"afterApplyCity");
+        takeScreenshot(driver, "afterApplyCity");
 
         By linkRootCategoryXPath = By.xpath("//a[@class='ui-link menu-desktop__root-title' and text() = 'Бытовая техника']");
         wait.until(ExpectedConditions.visibilityOfElementLocated(linkRootCategoryXPath));
@@ -83,7 +83,7 @@ public class Case2Test {
                 .moveToElement(linkRootCategory)
                 .perform();
 
-        takeScreenshot(driver,"afterMoveToLinkRootCategory");
+        takeScreenshot(driver, "afterMoveToLinkRootCategory");
 
         By linksFirstLevelXPath = By.xpath("//a[@class='ui-link menu-desktop__first-level']");
         wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(linksFirstLevelXPath));
@@ -94,12 +94,12 @@ public class Case2Test {
 
         By linkMakeDrinksXPath = By.xpath("//a[@class='ui-link menu-desktop__second-level' and text() = 'Приготовление напитков']");
         wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(linkMakeDrinksXPath));
-        WebElement linkMakeDrinks= driver.findElement(linkMakeDrinksXPath);
+        WebElement linkMakeDrinks = driver.findElement(linkMakeDrinksXPath);
         actions
                 .moveToElement(linkMakeDrinks)
                 .perform();
 
-        takeScreenshot(driver,"afterMoveToLinkDrinks");
+        takeScreenshot(driver, "afterMoveToLinkDrinks");
 
         actions
                 .moveToElement(linkRootCategory)
@@ -122,7 +122,7 @@ public class Case2Test {
                 .moveToElement(linkFurnace)
                 .perform();
 
-        takeScreenshot(driver,"afterMoveToLinkFurnace");
+        takeScreenshot(driver, "afterMoveToLinkFurnace");
 
         actions
                 .moveToElement(linkRootCategory)
@@ -137,7 +137,7 @@ public class Case2Test {
         WebElement linkElectricCookers = driver.findElement(linkElectricFurnaceXPath);
         linkElectricCookers.click();
 
-        takeScreenshot(driver,"afterClickLinkElectricCookers");
+        takeScreenshot(driver, "afterClickLinkElectricCookers");
 
         By textItemCountXPath = By.xpath("//span[@data-role='items-count']");
         wait.until(ExpectedConditions.visibilityOfElementLocated(textItemCountXPath));

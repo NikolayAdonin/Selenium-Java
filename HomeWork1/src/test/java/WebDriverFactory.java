@@ -23,7 +23,6 @@ public class WebDriverFactory {
             case "firefox":
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 firefoxOptions.addArguments("--kiosk");
-                firefoxOptions.addArguments("--private");
                 firefoxOptions.setPageLoadStrategy(PageLoadStrategy.valueOf(pageLoadStrategy.toUpperCase()));
                 WebDriverManager.firefoxdriver().setup();
                 return new FirefoxDriver(firefoxOptions);

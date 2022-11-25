@@ -61,7 +61,7 @@ public class Case1Test {
     }
 
     @Test
-    public void case1Test() throws InterruptedException {
+    public void case1Test() {
 
         driver.get(site);
         logger.info("Открыта страница - " + site);
@@ -74,23 +74,21 @@ public class Case1Test {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(5));
 
-        takeScreenshot(driver,"afterLoadPage1");
+        takeScreenshot(driver, "afterLoadPage1");
 
         By btnApplyCityXPath = By.xpath("//span[@class='base-ui-button-v2__text' and text() = 'Всё верно']");
         wait.until(ExpectedConditions.elementToBeClickable(btnApplyCityXPath));
         WebElement btnApplyCity = driver.findElement(btnApplyCityXPath);
         btnApplyCity.click();
 
-        //Thread.sleep(3000);
-
-        takeScreenshot(driver,"afterApplyCity");
+        takeScreenshot(driver, "afterApplyCity");
 
         By linkRootCategoryXPath = By.xpath("//a[@class='ui-link menu-desktop__root-title' and text() = 'Бытовая техника']");
         wait.until(ExpectedConditions.visibilityOfElementLocated(linkRootCategoryXPath));
         WebElement elementRootCategory = driver.findElement(linkRootCategoryXPath);
         elementRootCategory.click();
 
-        takeScreenshot(driver,"afterClickLinkRootCategory");
+        takeScreenshot(driver, "afterClickLinkRootCategory");
 
         By textTitleClassName = By.className("subcategory__page-title");
         wait.until(ExpectedConditions.visibilityOfElementLocated(textTitleClassName));
@@ -103,7 +101,7 @@ public class Case1Test {
         WebElement linkSubCategory = driver.findElement(linkSubCategoryXPath);
         linkSubCategory.click();
 
-        takeScreenshot(driver,"afterClickLinkSubCategory");
+        takeScreenshot(driver, "afterClickLinkSubCategory");
 
         By textTitleSubcategoryClassName = By.className("subcategory__page-title");
         wait.until(ExpectedConditions.visibilityOfElementLocated(textTitleSubcategoryClassName));
@@ -125,7 +123,6 @@ public class Case1Test {
         for (WebElement tempElement : linksSubCategory) {
             logger.info(tempElement.getText());
         }
-        Thread.sleep(2000);
         logger.info("Количество категорий = " + (long) linksSubCategory.size());
         Assertions.assertTrue((long) linksSubCategory.size() > 5, "Количество категорий > 5");
     }

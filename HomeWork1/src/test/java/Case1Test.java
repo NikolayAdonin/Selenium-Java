@@ -47,54 +47,54 @@ public class Case1Test {
 
         Thread.sleep(2000);
 
-        WebElement elementApplyCity = driver.findElement(By
+        WebElement btnApplyCity = driver.findElement(By
                 .xpath("//span[@class='base-ui-button-v2__text' and text() = 'Всё верно']"));
-        elementApplyCity.click();
+        btnApplyCity.click();
 
         Thread.sleep(2000);
 
-        WebElement elementRootCategory = driver.findElement(By
+        WebElement linkRootCategory = driver.findElement(By
                 .xpath("//a[@class='ui-link menu-desktop__root-title' and text() = 'Бытовая техника']"));
-        elementRootCategory.click();
+        linkRootCategory.click();
 
         Thread.sleep(2000);
 
-        WebElement checkTitle = driver.findElement(By
+        WebElement textTitle = driver.findElement(By
                 .className("subcategory__page-title"));
-        logger.info("Subcategory - Бытовая техника = " + checkTitle.getText().equals("Бытовая техника"));
-        Assertions.assertTrue(checkTitle.getText().equals("Бытовая техника"), "Текст 'Бытовая техника' не отображается");
+        logger.info("Subcategory - Бытовая техника = " + textTitle.getText().equals("Бытовая техника"));
+        Assertions.assertEquals("Бытовая техника", textTitle.getText(), "Текст 'Бытовая техника' не отображается");
 
-        WebElement elementSubCategory = driver.findElement(By
+        WebElement linkSubCategory = driver.findElement(By
                 .xpath("//span[@class='subcategory__title' and text() = 'Техника для кухни']"));
-        elementSubCategory.click();
+        linkSubCategory.click();
 
         Thread.sleep(2000);
 
-        WebElement checkTitleSubcategory= driver.findElement(By
+        WebElement textTitleSubcategory= driver.findElement(By
                 .className("subcategory__page-title"));
 
-        logger.info("Subcategory - Техника для кухни = " + checkTitleSubcategory.getText().equals("Техника для кухни"));
-        Assertions.assertTrue(checkTitleSubcategory.getText().equals("Техника для кухни"), "Текст 'Техника для кухни' не отображается");
+        logger.info("Subcategory - Техника для кухни = " + textTitleSubcategory.getText().equals("Техника для кухни"));
+        Assertions.assertEquals("Техника для кухни", textTitleSubcategory.getText(), "Текст 'Техника для кухни' не отображается");
 
         Thread.sleep(2000);
 
-        WebElement checkRefCustomKitchen = driver.findElement(By
+        WebElement linkCustomKitchen = driver.findElement(By
                 .xpath("//a[@class='button-ui button-ui_white configurator-links-block__links-link' and text() = 'Собрать свою кухню']"));
 
-        logger.info("Видимость ссылки 'Собрать свою кухню' = " + checkRefCustomKitchen.isDisplayed());
-        Assertions.assertTrue(checkRefCustomKitchen.isDisplayed(), "Ссылка 'Собрать свою кухню' не отображается");
+        logger.info("Видимость ссылки 'Собрать свою кухню' = " + linkCustomKitchen.isDisplayed());
+        Assertions.assertTrue(linkCustomKitchen.isDisplayed(), "Ссылка 'Собрать свою кухню' не отображается");
 
-        List<WebElement> elementsSubCategory = driver.findElements(By
+        List<WebElement> linksSubCategory = driver.findElements(By
                 .xpath("//span[@class='subcategory__title']"));
 
         logger.info("Названия категорий = ");
         String tempString = "";
-        for (WebElement tempElement : elementsSubCategory) {
+        for (WebElement tempElement : linksSubCategory) {
             logger.info(tempElement.getText());
         }
         Thread.sleep(2000);
 
-        logger.info("Количество категорий = " + elementsSubCategory.stream().count());
-        Assertions.assertTrue(elementsSubCategory.stream().count() > 5, "Количество категорий <= 5");
+        logger.info("Количество категорий = " + linksSubCategory.stream().count());
+        Assertions.assertTrue(linksSubCategory.stream().count() > 5, "Количество категорий <= 5");
     }
 }

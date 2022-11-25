@@ -7,7 +7,17 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import ru.yandex.qatools.ashot.AShot;
+import ru.yandex.qatools.ashot.Screenshot;
+import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
 import java.util.List;
 
 public class Case1Test {
@@ -34,8 +44,24 @@ public class Case1Test {
         }
     }
 
+    public void takeScreenshot(WebDriver driver, String eventName) {
+        try {
+            Actions actions = new Actions(driver);
+            Screenshot screenshot = new AShot()
+                    .shootingStrategy(ShootingStrategies.viewportPasting(100))
+                    .takeScreenshot(driver);
+            ImageIO.write(screenshot.getImage(), "png", new File("screenshots\\Case1\\" + eventName + ".png"));
+            logger.info("Скриншот сохранен в файле " + eventName + ".png");
+            actions
+                    .scrollByAmount(-driver.manage().window().getSize().getHeight() * 10, -driver.manage().window().getSize().getWidth() * 10)
+                    .perform();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
-    public void case1Test() throws InterruptedException {
+    public void case1Test() {
 
         driver.get(site);
         logger.info("Открыта страница - " + site);
@@ -45,56 +71,59 @@ public class Case1Test {
         logger.info(String.format("Ширина окна: %d", driver.manage().window().getSize().getWidth()));
         logger.info(String.format("Высота окна: %d", driver.manage().window().getSize().getHeight()));
 
-        Thread.sleep(2000);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(5));
 
-        WebElement elementApplyCity = driver.findElement(By
-                .xpath("//span[@class='base-ui-button-v2__text' and text() = 'Всё верно']"));
-        elementApplyCity.click();
+        takeScreenshot(driver, "afterLoadPage1");
 
-        Thread.sleep(2000);
+        By btnApplyCityXPath = By.xpath("//span[@class='base-ui-button-v2__text' and text() = 'Всё верно']");
+        wait.until(ExpectedConditions.elementToBeClickable(btnApplyCityXPath));
+        WebElement btnApplyCity = driver.findElement(btnApplyCityXPath);
+        btnApplyCity.click();
 
-        WebElement elementRootCategory = driver.findElement(By
-                .xpath("//a[@class='ui-link menu-desktop__root-title' and text() = 'Бытовая техника']"));
+        takeScreenshot(driver, "afterApplyCity");
+
+        By linkRootCategoryXPath = By.xpath("//a[@class='ui-link menu-desktop__root-title' and text() = 'Бытовая техника']");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(linkRootCategoryXPath));
+        WebElement elementRootCategory = driver.findElement(linkRootCategoryXPath);
         elementRootCategory.click();
 
-        Thread.sleep(2000);
+        takeScreenshot(driver, "afterClickLinkRootCategory");
 
-        WebElement checkTitle = driver.findElement(By
-                .className("subcategory__page-title"));
-        logger.info("Subcategory - Бытовая техника = " + checkTitle.getText().equals("Бытовая техника"));
-        Assertions.assertTrue(checkTitle.getText().equals("Бытовая техника"), "Текст 'Бытовая техника' не отображается");
+        By textTitleClassName = By.className("subcategory__page-title");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(textTitleClassName));
+        WebElement textTitle = driver.findElement(textTitleClassName);
+        logger.info("Subcategory - Бытовая техника = " + textTitle.getText().equals("Бытовая техника"));
+        Assertions.assertEquals("Бытовая техника", textTitle.getText(), "Текст 'Бытовая техника' не отображается");
 
-        WebElement elementSubCategory = driver.findElement(By
-                .xpath("//span[@class='subcategory__title' and text() = 'Техника для кухни']"));
-        elementSubCategory.click();
+        By linkSubCategoryXPath = By.xpath("//span[@class='subcategory__title' and text() = 'Техника для кухни']");
+        wait.until(ExpectedConditions.elementToBeClickable(linkSubCategoryXPath));
+        WebElement linkSubCategory = driver.findElement(linkSubCategoryXPath);
+        linkSubCategory.click();
 
-        Thread.sleep(2000);
+        takeScreenshot(driver, "afterClickLinkSubCategory");
 
-        WebElement checkTitleSubcategory= driver.findElement(By
-                .className("subcategory__page-title"));
-
+        By textTitleSubcategoryClassName = By.className("subcategory__page-title");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(textTitleSubcategoryClassName));
+        WebElement checkTitleSubcategory = driver.findElement(textTitleSubcategoryClassName);
         logger.info("Subcategory - Техника для кухни = " + checkTitleSubcategory.getText().equals("Техника для кухни"));
-        Assertions.assertTrue(checkTitleSubcategory.getText().equals("Техника для кухни"), "Текст 'Техника для кухни' не отображается");
+        Assertions.assertEquals("Техника для кухни", checkTitleSubcategory.getText(), "Текст 'Техника для кухни' не отображается");
 
-        Thread.sleep(2000);
+        By linkCustomKitchenXPath = By.xpath("//a[@class='button-ui button-ui_white configurator-links-block__links-link' and text() = 'Собрать свою кухню']");
+        wait.until(ExpectedConditions.elementToBeClickable(linkCustomKitchenXPath));
+        WebElement linkCustomKitchen = driver.findElement(linkCustomKitchenXPath);
+        logger.info("Видимость ссылки 'Собрать свою кухню' = " + linkCustomKitchen.isDisplayed());
+        Assertions.assertTrue(linkCustomKitchen.isDisplayed(), "Ссылка 'Собрать свою кухню' не отображается");
 
-        WebElement checkRefCustomKitchen = driver.findElement(By
-                .xpath("//a[@class='button-ui button-ui_white configurator-links-block__links-link' and text() = 'Собрать свою кухню']"));
-
-        logger.info("Видимость ссылки 'Собрать свою кухню' = " + checkRefCustomKitchen.isDisplayed());
-        Assertions.assertTrue(checkRefCustomKitchen.isDisplayed(), "Ссылка 'Собрать свою кухню' не отображается");
-
-        List<WebElement> elementsSubCategory = driver.findElements(By
-                .xpath("//span[@class='subcategory__title']"));
+        By linksSubCategoryXPath = By.xpath("//span[@class='subcategory__title']");
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(linksSubCategoryXPath));
+        List<WebElement> linksSubCategory = driver.findElements(linksSubCategoryXPath);
 
         logger.info("Названия категорий = ");
-        String tempString = "";
-        for (WebElement tempElement : elementsSubCategory) {
+        for (WebElement tempElement : linksSubCategory) {
             logger.info(tempElement.getText());
         }
-        Thread.sleep(2000);
-
-        logger.info("Количество категорий = " + elementsSubCategory.stream().count());
-        Assertions.assertTrue(elementsSubCategory.stream().count() > 5, "Количество категорий <= 5");
+        logger.info("Количество категорий = " + (long) linksSubCategory.size());
+        Assertions.assertTrue((long) linksSubCategory.size() > 5, "Количество категорий > 5");
     }
 }
